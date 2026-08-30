@@ -13,6 +13,7 @@ jobs:
   build:
     name: ESP32-S3 / ESP-IDF v5.5.4
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,17 +30,14 @@ jobs:
         run: idf.py build
 
       - name: Merge flash image
-        # merge-bin's -o path resolves relative to the CWD idf.py was
-        # invoked from (project root), NOT automatically inside build/,
-        # even though the *default* (no -o) output does land in build/.
-        # Giving it "build/esp32s3_nat_router_merged.bin" explicitly is
-        # what actually makes the following cp step find the file.
-        run: idf.py merge-bin -o build/esp32s3_nat_router_merged.bin
+        run: idf.py merge-bin -o esp32s3_nat_router_merged.bin
 
       - name: Collect firmware
         run: |
           mkdir -p artifacts
+
           ls -la build/*.bin
+
           cp build/esp32s3_nat_router.bin artifacts/esp32s3_app.bin
           cp build/bootloader/bootloader.bin artifacts/esp32s3_bootloader.bin
           cp build/partition_table/partition-table.bin artifacts/esp32s3_partition-table.bin
